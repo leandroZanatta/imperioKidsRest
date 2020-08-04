@@ -10,6 +10,8 @@
 	<include file="db/changeset/20200730_183100_tb_perfilusuario.xml" />
 	<include file="db/changeset/20200730_183200_tb_programa.xml" />
 	<include file="db/changeset/20200730_183300_tb_permissaoprograma.xml" />
+	<include file="db/changeset/20200804_155900_tb_caracteristica.xml" />
+
 
 	<include file="db/db.inserts.xml" />
 
