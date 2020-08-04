@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+	http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<include file="db/db.types.xml" />
+
+	<include file="db/changeset/2020_07_30_131300_tb_usuario.xml" />
+	<include file="db/changeset/20200730_183000_tb_perfil.xml" />
+	<include file="db/changeset/20200730_183100_tb_perfilusuario.xml" />
+	<include file="db/changeset/20200730_183200_tb_programa.xml" />
+	<include file="db/changeset/20200730_183300_tb_permissaoprograma.xml" />
+
+	<include file="db/db.inserts.xml" />
+
+</databaseChangeLog>

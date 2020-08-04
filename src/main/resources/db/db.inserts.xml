@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd  http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+	<changeSet id="carga_tb_usuario" author="leandro">
+		<insert tableName="tb_usuario">
+			<column name="id_usuario" valueComputed="nextval('gen_usuario')" />
+			<column name="tx_nome" value="Leandro Zanatta" />
+			<column name="tx_usuario" value="leandro" />
+			<column name="tx_senha" value="6c77b86bff8c717c2d4615e27b4d503c" />
+		</insert>
+	</changeSet>
+</databaseChangeLog>

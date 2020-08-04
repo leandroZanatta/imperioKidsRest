@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd  http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+	<changeSet id="2020_07_30_131300" author="leandro" logicalFilePath="2020_07_30_131300_tb_usuario.xml">
+
+		<preConditions onFail="CONTINUE">
+			<not>
+				<tableExists tableName="tb_usuario" />
+			</not>
+		</preConditions>
+
+		<createTable tableName="tb_usuario">
+
+			<column name="id_usuario" type="${numeric.18x0}" remarks="CÓDIGO INDENTIFICADOR">
+				<constraints primaryKey="true" primaryKeyName="usuario_pk" nullable="false" />
+			</column>
+
+			<column name="tx_nome" type="${varchar.100}" remarks="NOME DO USUÁRIO">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="tx_usuario" type="VARCHAR(100)" remarks="CAMPO LOGIN USUARIO">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="tx_senha" type="VARCHAR(100)" remarks="CAMPO SENHA USUARIO">
+				<constraints nullable="false" />
+			</column>
+
+		</createTable>
+
+		<createSequence sequenceName="gen_usuario" />
+
+	</changeSet>
+</databaseChangeLog>
