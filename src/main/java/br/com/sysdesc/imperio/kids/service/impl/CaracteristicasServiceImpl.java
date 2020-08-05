@@ -8,7 +8,11 @@ import org.springframework.stereotype.Service;
 
 import br.com.sysdesc.imperio.kids.dto.CaracteristicasDTO;
 import br.com.sysdesc.imperio.kids.repository.CaracteristicasRepository;
+import br.com.sysdesc.imperio.kids.repository.domain.Caracteristica;
 import br.com.sysdesc.imperio.kids.service.CaracteristicasService;
+import br.com.sysdesc.imperio.kids.util.LongUtil;
+import br.com.sysdesc.imperio.kids.util.StringUtil;
+import br.com.sysdesc.imperio.kids.util.SysDescException;
 
 @Service
 public class CaracteristicasServiceImpl implements CaracteristicasService {
@@ -22,6 +26,28 @@ public class CaracteristicasServiceImpl implements CaracteristicasService {
 
 		return caracteristicasRepository.findAll(PageRequest.of(0, 90))
 				.map(caracteristica -> new CaracteristicasDTO(caracteristica.getIdCaracteristica(), caracteristica.getDescricao()));
+	}
+
+	@Override
+	public void salvar(CaracteristicasDTO caracteristicasDTO) {
+
+		if (LongUtil.isNullOrZero(caracteristicasDTO.getIdCaracteristica())) {
+
+			if (StringUtil.isNullOrEmpty(caracteristicasDTO.getDescricao())) {
+				throw new SysDescException("O campo descrição não pode ser vazio");
+			}
+
+			if (caracteristicasRepository.existsByDescricao(caracteristicasDTO.getDescricao())) {
+				throw new SysDescException("Característica já está cadastrada, favor insira outra descrição");
+			}
+		}
+
+		Caracteristica caracteristica = new Caracteristica();
+		caracteristica.setDescricao(caracteristicasDTO.getDescricao());
+		caracteristica.setIdCaracteristica(caracteristicasDTO.getIdCaracteristica());
+
+		caracteristicasRepository.save(caracteristica);
+
 	}
 
 }

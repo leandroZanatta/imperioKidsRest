@@ -3,9 +3,13 @@ package br.com.sysdesc.imperio.kids.controller.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.sysdesc.imperio.kids.controller.Caracteristicas;
@@ -14,6 +18,7 @@ import br.com.sysdesc.imperio.kids.service.CaracteristicasService;
 
 @CrossOrigin
 @RestController
+@RequestMapping(path = "/caracteristicas")
 public class CaracteristicasImpl implements Caracteristicas {
 
 	@Autowired
@@ -21,10 +26,18 @@ public class CaracteristicasImpl implements Caracteristicas {
 	private CaracteristicasService caracteristicasService;
 
 	@Override
-	@GetMapping(path = "/caracteristicas")
+	@GetMapping
 	public ResponseEntity<Page<CaracteristicasDTO>> listar() {
 
 		return ResponseEntity.ok(caracteristicasService.listar());
+	}
+
+	@Override
+	@PostMapping
+	public ResponseEntity<Void> salvar(@RequestBody CaracteristicasDTO caracteristicasDTO) {
+		caracteristicasService.salvar(caracteristicasDTO);
+
+		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
 }

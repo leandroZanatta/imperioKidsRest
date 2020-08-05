@@ -5,8 +5,9 @@ import org.springframework.http.ResponseEntity;
 
 import br.com.sysdesc.imperio.kids.dto.CaracteristicasDTO;
 
-@FunctionalInterface
 public interface Caracteristicas {
 
 	public ResponseEntity<Page<CaracteristicasDTO>> listar();
+
+	public ResponseEntity<Void> salvar(CaracteristicasDTO caracteristicasDTO);
 }
