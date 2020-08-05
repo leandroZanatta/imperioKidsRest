@@ -22,10 +22,20 @@ public class CaracteristicasServiceImpl implements CaracteristicasService {
 	private CaracteristicasRepository caracteristicasRepository;
 
 	@Override
-	public Page<CaracteristicasDTO> listar() {
+	public Page<CaracteristicasDTO> listar(String valorPesquisa, Long pagina, Long registros) {
 
-		return caracteristicasRepository.findAll(PageRequest.of(0, 90))
-				.map(caracteristica -> new CaracteristicasDTO(caracteristica.getIdCaracteristica(), caracteristica.getDescricao()));
+		if (!StringUtil.isNullOrEmpty(valorPesquisa)) {
+
+			return map(caracteristicasRepository.findByDescricaoLikeIgnoreCase(String.format("%%%s%%", valorPesquisa),
+					PageRequest.of(pagina.intValue(), registros.intValue())));
+		}
+
+		return map(caracteristicasRepository.findAll(PageRequest.of(pagina.intValue(), registros.intValue())));
+	}
+
+	private Page<CaracteristicasDTO> map(Page<Caracteristica> pagina) {
+
+		return pagina.map(caracteristica -> new CaracteristicasDTO(caracteristica.getIdCaracteristica(), caracteristica.getDescricao()));
 	}
 
 	@Override

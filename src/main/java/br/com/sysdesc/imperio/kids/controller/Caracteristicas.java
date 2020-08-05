@@ -7,7 +7,8 @@ import br.com.sysdesc.imperio.kids.dto.CaracteristicasDTO;
 
 public interface Caracteristicas {
 
-	public ResponseEntity<Page<CaracteristicasDTO>> listar();
+	public ResponseEntity<Page<CaracteristicasDTO>> listar(String valorPesquisa,
+			Long pagina, Long registros);
 
 	public ResponseEntity<Void> salvar(CaracteristicasDTO caracteristicasDTO);
 }

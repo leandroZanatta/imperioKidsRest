@@ -6,7 +6,7 @@ import br.com.sysdesc.imperio.kids.dto.CaracteristicasDTO;
 
 public interface CaracteristicasService {
 
-	public abstract Page<CaracteristicasDTO> listar();
+	public abstract Page<CaracteristicasDTO> listar(String valorPesquisa, Long pagina, Long registros);
 
 	public abstract void salvar(CaracteristicasDTO caracteristicasDTO);
 }

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.sysdesc.imperio.kids.controller.Caracteristicas;
@@ -27,9 +28,10 @@ public class CaracteristicasImpl implements Caracteristicas {
 
 	@Override
 	@GetMapping
-	public ResponseEntity<Page<CaracteristicasDTO>> listar() {
+	public ResponseEntity<Page<CaracteristicasDTO>> listar(@RequestParam("valorPesquisa") String valorPesquisa,
+			@RequestParam("pagina") Long pagina, @RequestParam("registros") Long registros) {
 
-		return ResponseEntity.ok(caracteristicasService.listar());
+		return ResponseEntity.ok(caracteristicasService.listar(valorPesquisa, pagina, registros));
 	}
 
 	@Override
