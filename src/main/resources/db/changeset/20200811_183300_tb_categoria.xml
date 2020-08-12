@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd  http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+	<changeSet id="20200811_183300" author="leandro">
+
+		<preConditions onFail="CONTINUE">
+			<not>
+				<tableExists tableName="tb_categoria" />
+			</not>
+		</preConditions>
+
+		<createTable tableName="tb_categoria">
+
+			<column name="id_categoria" type="${numeric.18x0}" remarks="CÓDIGO INDENTIFICADOR">
+				<constraints primaryKey="true" primaryKeyName="categoria_pk" nullable="false" />
+			</column>
+
+			<column name="cd_categoria" type="${numeric.18x0}" remarks="CÓDIGO DA CATEGORIA PRINCIPAL">
+				<constraints nullable="true" />
+			</column>
+
+			<column name="tx_descricao" type="${varchar.100}" remarks="NOME DA CATEGORIA">
+				<constraints nullable="false" />
+			</column>
+
+		</createTable>
+
+		<createSequence sequenceName="gen_categoria" />
+
+		<addForeignKeyConstraint baseColumnNames="cd_categoria" baseTableName="tb_categoria" constraintName="fk_categoria_pai"
+			onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id_categoria" referencedTableName="tb_categoria" />
+
+	</changeSet>
+
+</databaseChangeLog>
