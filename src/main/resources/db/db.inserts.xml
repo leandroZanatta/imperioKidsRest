@@ -11,4 +11,24 @@
 			<column name="tx_senha" value="6c77b86bff8c717c2d4615e27b4d503c" />
 		</insert>
 	</changeSet>
+
+	<changeSet id="carga_home" author="leandro">
+		<insert tableName="tb_programa">
+			<column name="id_programa" value="1" />
+			<column name="tx_descricao" value="Home" />
+			<column name="tx_icone" value="icon-home" />
+			<column name="nr_ordem" value="1" />
+		</insert>
+	</changeSet>
+
+	<changeSet id="permissao_home" author="leandro">
+		<insert tableName="tb_permissaoprograma">
+			<column name="id_permissaoprograma" valueComputed="nextval('gen_permissaoprograma')" />
+			<column name="cd_usuario" value="1" />
+			<column name="cd_programa" value="1" />
+			<column name="fl_leitura" valueBoolean="true" />
+			<column name="fl_cadastro" valueBoolean="true" />
+			<column name="fl_exclusao" valueBoolean="true" />
+		</insert>
+	</changeSet>
 </databaseChangeLog>
