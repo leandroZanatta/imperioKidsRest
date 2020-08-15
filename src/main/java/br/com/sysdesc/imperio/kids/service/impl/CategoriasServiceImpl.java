@@ -10,6 +10,7 @@ import br.com.sysdesc.imperio.kids.dto.CategoriaDTO;
 import br.com.sysdesc.imperio.kids.repository.CategoriasRepository;
 import br.com.sysdesc.imperio.kids.repository.domain.Categoria;
 import br.com.sysdesc.imperio.kids.service.CategoriasService;
+import br.com.sysdesc.imperio.kids.util.DateUtil;
 import br.com.sysdesc.imperio.kids.util.LongUtil;
 import br.com.sysdesc.imperio.kids.util.StringUtil;
 import br.com.sysdesc.imperio.kids.util.SysDescException;
@@ -47,6 +48,11 @@ public class CategoriasServiceImpl implements CategoriasService {
 				categoriaDTO.setDescricaoPai(categoria.getCategoria().getDescricao());
 			}
 
+			if (categoria.getDataExclusao() != null) {
+
+				categoriaDTO.setDataExclusao(DateUtil.formatString(categoria.getDataExclusao(), DateUtil.FORMATO_DD_MM_YYYY));
+			}
+
 			return categoriaDTO;
 		});
 	}
@@ -78,7 +84,31 @@ public class CategoriasServiceImpl implements CategoriasService {
 		categoria.setIdCategoria(categoriaDTO.getIdCategoria());
 
 		categoriasRepository.save(categoria);
+	}
 
+	@Override
+	public void excluir(Long codigoCategoria) {
+
+		Categoria categoria = buscarCategoria(codigoCategoria);
+
+		categoria.setDataExclusao(DateUtil.getDateTimeNow());
+
+		categoriasRepository.save(categoria);
+	}
+
+	@Override
+	public void reincluir(Long codigoCategoria) {
+		Categoria categoria = buscarCategoria(codigoCategoria);
+
+		categoria.setDataExclusao(null);
+
+		categoriasRepository.save(categoria);
+	}
+
+	private Categoria buscarCategoria(Long codigoCategoria) {
+
+		return categoriasRepository.findById(codigoCategoria)
+				.orElseThrow(() -> new SysDescException("Categoria Não encontrada"));
 	}
 
 }

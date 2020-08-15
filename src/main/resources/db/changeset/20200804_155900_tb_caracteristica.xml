@@ -26,4 +26,11 @@
 		<createSequence sequenceName="gen_caracteristica" />
 	</changeSet>
 
+	<changeSet id="20200814_210600" author="leandro">
+
+		<addColumn tableName="tb_caracteristica">
+			<column name="dt_exclusao" type="${date}"></column>
+		</addColumn>
+	</changeSet>
+
 </databaseChangeLog>

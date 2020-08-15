@@ -12,4 +12,6 @@ public class CaracteristicasDTO {
 	private Long idCaracteristica;
 
 	private String descricao;
+
+	private String dataExclusao;
 }

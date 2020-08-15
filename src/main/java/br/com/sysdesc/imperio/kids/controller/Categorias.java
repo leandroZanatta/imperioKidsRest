@@ -11,4 +11,8 @@ public interface Categorias {
 			Long pagina, Long registros);
 
 	public ResponseEntity<Void> salvar(CategoriaDTO categoriaDTO);
+
+	public ResponseEntity<Void> excluir(Long codigoCategoria);
+
+	public ResponseEntity<Void> reincluir(Long codigoCategoria);
 }

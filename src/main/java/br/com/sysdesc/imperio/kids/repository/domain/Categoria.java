@@ -1,6 +1,7 @@
 package br.com.sysdesc.imperio.kids.repository.domain;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -13,6 +14,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import lombok.Data;
 
@@ -30,6 +33,10 @@ public class Categoria implements Serializable {
 
 	@Column(name = "cd_categoria")
 	private Long codigoCategoria;
+
+	@Column(name = "dt_exclusao")
+	@Temporal(TemporalType.DATE)
+	private Date dataExclusao;
 
 	@ManyToOne
 	@JoinColumn(name = "cd_categoria", insertable = false, updatable = false)

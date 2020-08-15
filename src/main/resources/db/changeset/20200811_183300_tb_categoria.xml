@@ -34,4 +34,11 @@
 
 	</changeSet>
 
+	<changeSet id="20200814_185500" author="leandro">
+
+		<addColumn tableName="tb_categoria">
+			<column name="dt_exclusao" type="${date}"></column>
+		</addColumn>
+	</changeSet>
+
 </databaseChangeLog>

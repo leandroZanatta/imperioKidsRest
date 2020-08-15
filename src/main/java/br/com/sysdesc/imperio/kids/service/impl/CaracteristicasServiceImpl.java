@@ -10,6 +10,7 @@ import br.com.sysdesc.imperio.kids.dto.CaracteristicasDTO;
 import br.com.sysdesc.imperio.kids.repository.CaracteristicasRepository;
 import br.com.sysdesc.imperio.kids.repository.domain.Caracteristica;
 import br.com.sysdesc.imperio.kids.service.CaracteristicasService;
+import br.com.sysdesc.imperio.kids.util.DateUtil;
 import br.com.sysdesc.imperio.kids.util.LongUtil;
 import br.com.sysdesc.imperio.kids.util.StringUtil;
 import br.com.sysdesc.imperio.kids.util.SysDescException;
@@ -35,7 +36,18 @@ public class CaracteristicasServiceImpl implements CaracteristicasService {
 
 	private Page<CaracteristicasDTO> map(Page<Caracteristica> pagina) {
 
-		return pagina.map(caracteristica -> new CaracteristicasDTO(caracteristica.getIdCaracteristica(), caracteristica.getDescricao()));
+		return pagina.map(caracteristica -> {
+			CaracteristicasDTO caracteristicasDTO = new CaracteristicasDTO();
+
+			caracteristicasDTO.setIdCaracteristica(caracteristica.getIdCaracteristica());
+			caracteristicasDTO.setDescricao(caracteristica.getDescricao());
+
+			if (caracteristica.getDataExclusao() != null) {
+				caracteristicasDTO.setDataExclusao(DateUtil.formatString(caracteristica.getDataExclusao(), DateUtil.FORMATO_DD_MM_YYYY));
+			}
+
+			return caracteristicasDTO;
+		});
 	}
 
 	@Override
@@ -60,4 +72,28 @@ public class CaracteristicasServiceImpl implements CaracteristicasService {
 
 	}
 
+	@Override
+	public void excluir(Long codigoCaracteristica) {
+		Caracteristica caracteristica = buscarBuscaCaracteristica(codigoCaracteristica);
+
+		caracteristica.setDataExclusao(DateUtil.getDateTimeNow());
+
+		caracteristicasRepository.save(caracteristica);
+
+	}
+
+	@Override
+	public void reincluir(Long codigoCaracteristica) {
+		Caracteristica caracteristica = buscarBuscaCaracteristica(codigoCaracteristica);
+
+		caracteristica.setDataExclusao(null);
+
+		caracteristicasRepository.save(caracteristica);
+	}
+
+	private Caracteristica buscarBuscaCaracteristica(Long codigoCaracteristica) {
+
+		return caracteristicasRepository.findById(codigoCaracteristica)
+				.orElseThrow(() -> new SysDescException("Característica Não encontrada"));
+	}
 }

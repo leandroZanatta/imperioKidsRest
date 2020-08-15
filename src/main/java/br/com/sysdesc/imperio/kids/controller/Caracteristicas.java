@@ -11,4 +11,8 @@ public interface Caracteristicas {
 			Long pagina, Long registros);
 
 	public ResponseEntity<Void> salvar(CaracteristicasDTO caracteristicasDTO);
+
+	public ResponseEntity<Void> excluir(Long codigoCaracteristica);
+
+	public ResponseEntity<Void> reincluir(Long codigoCaracteristica);
 }

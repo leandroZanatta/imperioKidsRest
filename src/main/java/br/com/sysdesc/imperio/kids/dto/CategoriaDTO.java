@@ -16,4 +16,6 @@ public class CategoriaDTO {
 	private String descricaoPai;
 
 	private String descricao;
+
+	private String dataExclusao;
 }
