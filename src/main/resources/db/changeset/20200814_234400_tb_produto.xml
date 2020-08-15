@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd  http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+	<changeSet id="20200814_234400" author="leandro">
+
+		<preConditions onFail="CONTINUE">
+			<not>
+				<tableExists tableName="tb_produto" />
+			</not>
+		</preConditions>
+
+		<createTable tableName="tb_produto">
+
+			<column name="id_produto" type="${numeric.18x0}" remarks="CÓDIGO INDENTIFICADOR">
+				<constraints primaryKey="true" primaryKeyName="produto_pk" nullable="false" />
+			</column>
+
+			<column name="cd_categoria" type="${numeric.18x0}" remarks="CÓDIGO DA CATEGORIA">
+				<constraints nullable="true" />
+			</column>
+
+			<column name="tx_descricao" type="${varchar.100}" remarks="BREVE DESCRIÇÃO DO PRODUTO">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="tx_descricaoconteudo" type="${blob.text}" remarks="DESCRIÇÃO DO PRODUTO">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="fl_controlaestoque" type="${blob.text}" remarks="CONTROLA ESTOQUE">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="fl_produtooferta" type="${blob.text}" remarks="PRODUTO EM OFERTA">
+				<constraints nullable="false" />
+			</column>
+			
+			<column name="cd_unidade" type="${numeric.18x0}" remarks="CÓDIGO DA UNIDADE">
+				<constraints nullable="true" />
+			</column>
+
+			<column name="dt_exclusao" type="${date}" />
+
+		</createTable>
+
+		<createSequence sequenceName="gen_produto" />
+
+		<addForeignKeyConstraint baseColumnNames="cd_categoria" baseTableName="tb_produto" constraintName="fk_produto_categoria"
+			onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id_categoria" referencedTableName="tb_categoria" />
+
+	</changeSet>
+
+</databaseChangeLog>

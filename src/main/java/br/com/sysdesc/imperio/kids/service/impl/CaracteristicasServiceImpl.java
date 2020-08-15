@@ -68,6 +68,10 @@ public class CaracteristicasServiceImpl implements CaracteristicasService {
 		caracteristica.setDescricao(caracteristicasDTO.getDescricao());
 		caracteristica.setIdCaracteristica(caracteristicasDTO.getIdCaracteristica());
 
+		if (caracteristicasDTO.getDataExclusao() != null) {
+			caracteristica.setDataExclusao(DateUtil.parseDate(caracteristicasDTO.getDataExclusao(), DateUtil.FORMATO_DD_MM_YYYY));
+		}
+
 		caracteristicasRepository.save(caracteristica);
 
 	}

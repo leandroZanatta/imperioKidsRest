@@ -83,6 +83,10 @@ public class CategoriasServiceImpl implements CategoriasService {
 		categoria.setCodigoCategoria(categoriaDTO.getCodigoCategoria());
 		categoria.setIdCategoria(categoriaDTO.getIdCategoria());
 
+		if (categoriaDTO.getDataExclusao() != null) {
+			categoria.setDataExclusao(DateUtil.parseDate(categoriaDTO.getDataExclusao(), DateUtil.FORMATO_DD_MM_YYYY));
+		}
+
 		categoriasRepository.save(categoria);
 	}
 

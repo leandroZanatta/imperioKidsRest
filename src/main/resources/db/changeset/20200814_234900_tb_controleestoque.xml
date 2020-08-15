@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd  http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+	<changeSet id="20200814_234900" author="leandro">
+
+		<preConditions onFail="CONTINUE">
+			<not>
+				<tableExists tableName="tb_controleestoque" />
+			</not>
+		</preConditions>
+
+		<createTable tableName="tb_controleestoque">
+
+			<column name="cd_produto" type="${numeric.18x0}" remarks="CÓDIGO DO PRODUTO">
+				<constraints primaryKey="true" primaryKeyName="controleestoque_pk" nullable="false" />
+			</column>
+
+			<column name="nr_estoqueminimo" type="${numeric.18x2}" remarks="ESTOQUE MÍNIMO">
+				<constraints nullable="true" />
+			</column>
+
+			<column name="nr_maximo" type="${numeric.18x2}" remarks="ESTOQUE MÁXIMO">
+				<constraints nullable="true" />
+			</column>
+
+		</createTable>
+
+
+		<addForeignKeyConstraint baseColumnNames="cd_produto" baseTableName="tb_controleestoque"
+			constraintName="fk_controleestoque_produto" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id_produto"
+			referencedTableName="tb_produto" />
+
+	</changeSet>
+
+</databaseChangeLog>
