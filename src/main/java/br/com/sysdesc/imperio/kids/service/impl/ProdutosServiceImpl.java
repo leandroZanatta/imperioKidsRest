@@ -26,6 +26,7 @@ import br.com.sysdesc.imperio.kids.repository.domain.ImagemProduto;
 import br.com.sysdesc.imperio.kids.repository.domain.Produto;
 import br.com.sysdesc.imperio.kids.service.ProdutosService;
 import br.com.sysdesc.imperio.kids.util.DateUtil;
+import br.com.sysdesc.imperio.kids.util.ImageUtil;
 import br.com.sysdesc.imperio.kids.util.LongUtil;
 import br.com.sysdesc.imperio.kids.util.StringUtil;
 import br.com.sysdesc.imperio.kids.util.SysDescException;
@@ -197,30 +198,11 @@ public class ProdutosServiceImpl implements ProdutosService {
 			imagemProdutoDTO.setIdImagemProduto(imagem.getIdImagemProduto());
 			imagemProdutoDTO.setImagemPrincipal(imagem.getImagemPrincipal());
 			imagemProdutoDTO.setLocal(imagem.getCaminho());
-			imagemProdutoDTO.setContent(criarBase64(imagem.getCaminho()));
-			imagemProdutoDTO.setType(getType(imagem.getCaminho()));
+			imagemProdutoDTO.setContent(ImageUtil.criarBase64(imagem.getCaminho()));
+			imagemProdutoDTO.setType(ImageUtil.getType(imagem.getCaminho()));
 			return imagemProdutoDTO;
 
 		}).collect(Collectors.toList());
 	}
 
-	private String getType(String caminho) {
-
-		return String.format("data:image/%s;base64", FilenameUtils.getExtension(caminho));
-	}
-
-	private String criarBase64(String caminho) {
-
-		try {
-
-			byte[] bytearrayImagem = FileUtils.readFileToByteArray(new File(caminho));
-
-			return Base64.getEncoder().encodeToString(bytearrayImagem);
-
-		} catch (IOException e) {
-
-			throw new SysDescException("Não foi possivel gravar a imagem");
-		}
-
-	}
 }
