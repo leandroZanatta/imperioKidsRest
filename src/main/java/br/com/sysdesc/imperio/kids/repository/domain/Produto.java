@@ -45,6 +45,9 @@ public class Produto implements Serializable {
 	@Column(name = "fl_produtooferta")
 	private Boolean produtoOferta;
 
+	@Column(name = "fl_produtodestaque")
+	private Boolean produtoDestaque;
+
 	@Column(name = "cd_unidade")
 	private Long codigoUnidade;
 

@@ -14,6 +14,7 @@
 	<include file="db/changeset/20200811_183300_tb_categoria.xml" />
 	<include file="db/changeset/20200814_234400_tb_produto.xml" />
 	<include file="db/changeset/20200814_234900_tb_controleestoque.xml" />
+	<include file="db/changeset/20200818_200700_tb_imagemproduto.xml" />
 
 	<include file="db/db.inserts.xml" />
 

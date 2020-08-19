@@ -19,6 +19,8 @@ public class ProdutoDTO {
 
 	private Boolean produtoOferta;
 
+	private Boolean produtoDestaque;
+
 	private String dataExclusao;
 
 }

@@ -29,14 +29,18 @@
 				<constraints nullable="false" />
 			</column>
 
-			<column name="fl_controlaestoque" type="${blob.text}" remarks="CONTROLA ESTOQUE">
+			<column name="fl_controlaestoque" type="${boolean}" remarks="CONTROLA ESTOQUE">
 				<constraints nullable="false" />
 			</column>
 
-			<column name="fl_produtooferta" type="${blob.text}" remarks="PRODUTO EM OFERTA">
+			<column name="fl_produtooferta" type="${boolean}" remarks="PRODUTO EM OFERTA">
 				<constraints nullable="false" />
 			</column>
-			
+
+			<column name="fl_produtodestaque" type="${boolean}">
+				<constraints nullable="false" />
+			</column>
+
 			<column name="cd_unidade" type="${numeric.18x0}" remarks="CÓDIGO DA UNIDADE">
 				<constraints nullable="true" />
 			</column>

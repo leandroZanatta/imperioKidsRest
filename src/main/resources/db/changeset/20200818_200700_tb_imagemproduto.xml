@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd  http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+	<changeSet id="20200818_200700" author="leandro">
+
+		<preConditions onFail="CONTINUE">
+			<not>
+				<tableExists tableName="tb_imagemproduto" />
+			</not>
+		</preConditions>
+
+		<createTable tableName="tb_imagemproduto">
+
+			<column name="id_imagemproduto" type="${numeric.18x0}" remarks="CÓDIGO INDENTIFICADOR">
+				<constraints primaryKey="true" primaryKeyName="imagemproduto_pk" nullable="false" />
+			</column>
+
+			<column name="cd_produto" type="${numeric.18x0}" remarks="CÓDIGO DDO PRODUTO">
+				<constraints nullable="true" />
+			</column>
+
+			<column name="tx_caminho" type="${varchar.100}" remarks="CAMINHO DA IMAGEM">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="fl_imagemprincipal" type="${boolean}" remarks="FLAG IMAGEM PRINCIPAL">
+				<constraints nullable="false" />
+			</column>
+
+		</createTable>
+
+		<createSequence sequenceName="gen_imagemproduto" />
+
+		<addForeignKeyConstraint baseColumnNames="cd_produto" baseTableName="tb_imagemproduto" constraintName="fk_imagem_produto"
+			onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id_produto" referencedTableName="tb_produto" />
+
+	</changeSet>
+
+</databaseChangeLog>

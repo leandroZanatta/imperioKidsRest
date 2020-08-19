@@ -1,5 +1,7 @@
 package br.com.sysdesc.imperio.kids.controller.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
@@ -17,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.sysdesc.imperio.kids.controller.Produtos;
+import br.com.sysdesc.imperio.kids.dto.CadastroImagemProdutoDTO;
+import br.com.sysdesc.imperio.kids.dto.ImagemProdutoDTO;
 import br.com.sysdesc.imperio.kids.dto.ProdutoDTO;
 import br.com.sysdesc.imperio.kids.service.ProdutosService;
 
@@ -61,6 +65,21 @@ public class ProdutosImpl implements Produtos {
 		produtosService.reincluir(codigoProduto);
 
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
+	}
+
+	@Override
+	@PostMapping("/imagem")
+	public ResponseEntity<Void> adicionarImagem(@RequestBody CadastroImagemProdutoDTO imagemProdutoDTO) {
+		produtosService.adicionarImagem(imagemProdutoDTO);
+
+		return new ResponseEntity<>(HttpStatus.ACCEPTED);
+	}
+
+	@Override
+	@GetMapping("/imagem/{codigoProduto}")
+	public ResponseEntity<List<ImagemProdutoDTO>> listarImagens(@PathVariable("codigoProduto") Long codigoProduto) {
+
+		return ResponseEntity.ok(produtosService.listarImagens(codigoProduto));
 	}
 
 }
