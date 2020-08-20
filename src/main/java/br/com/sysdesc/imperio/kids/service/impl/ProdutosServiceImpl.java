@@ -1,14 +1,8 @@
 package br.com.sysdesc.imperio.kids.service.impl;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Base64;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
@@ -24,9 +18,9 @@ import br.com.sysdesc.imperio.kids.repository.ProdutoRepository;
 import br.com.sysdesc.imperio.kids.repository.domain.Categoria;
 import br.com.sysdesc.imperio.kids.repository.domain.ImagemProduto;
 import br.com.sysdesc.imperio.kids.repository.domain.Produto;
+import br.com.sysdesc.imperio.kids.service.AmazonService;
 import br.com.sysdesc.imperio.kids.service.ProdutosService;
 import br.com.sysdesc.imperio.kids.util.DateUtil;
-import br.com.sysdesc.imperio.kids.util.ImageUtil;
 import br.com.sysdesc.imperio.kids.util.LongUtil;
 import br.com.sysdesc.imperio.kids.util.StringUtil;
 import br.com.sysdesc.imperio.kids.util.SysDescException;
@@ -45,6 +39,10 @@ public class ProdutosServiceImpl implements ProdutosService {
 	@Autowired
 	@Lazy
 	private ImagemProdutoRepository imagemProdutoRepository;
+
+	@Autowired
+	@Lazy
+	private AmazonService amazonService;
 
 	@Override
 	public Page<ProdutoDTO> listar(String valorPesquisa, Long pagina, Long registros) {
@@ -146,47 +144,20 @@ public class ProdutosServiceImpl implements ProdutosService {
 	@Override
 	public void adicionarImagem(CadastroImagemProdutoDTO imagemProdutoDTO) {
 
-		String imagemSemHeader = imagemProdutoDTO.getImagem().replace("/^data:.+;base64,/", "");
+		String urlArquivo = amazonService.putFile(imagemProdutoDTO.getImagem(), imagemProdutoDTO.getDescricao());
 
-		try {
+		ImagemProduto imagemProduto = new ImagemProduto();
+		imagemProduto.setCaminho(urlArquivo);
+		imagemProduto.setProduto(buscarBuscaProduto(imagemProdutoDTO.getCodigoProduto()));
+		imagemProduto.setImagemPrincipal(!existeImagemCadastrada(imagemProdutoDTO.getCodigoProduto()));
 
-			byte[] image = Base64.getDecoder().decode(imagemSemHeader);
-
-			File arquivoImagem = createFileImage(imagemProdutoDTO.getDescricao());
-
-			FileUtils.writeByteArrayToFile(arquivoImagem, image);
-
-			ImagemProduto imagemProduto = new ImagemProduto();
-			imagemProduto.setCaminho(arquivoImagem.getAbsolutePath());
-			imagemProduto.setProduto(buscarBuscaProduto(imagemProdutoDTO.getCodigoProduto()));
-			imagemProduto.setImagemPrincipal(!existeImagemCadastrada(imagemProdutoDTO.getCodigoProduto()));
-
-			imagemProdutoRepository.save(imagemProduto);
-
-		} catch (IOException e) {
-
-			throw new SysDescException("Não foi possivel gravar a imagem");
-		}
+		imagemProdutoRepository.save(imagemProduto);
 
 	}
 
 	private boolean existeImagemCadastrada(Long codigoProduto) {
 
 		return imagemProdutoRepository.existsByCodigoProduto(codigoProduto);
-	}
-
-	private File createFileImage(String imageName) {
-
-		File pastaImagem = new File(System.getProperty("user.dir") + File.separator + "images");
-
-		if (!pastaImagem.exists()) {
-
-			pastaImagem.mkdirs();
-		}
-
-		String extension = FilenameUtils.getExtension(imageName);
-
-		return new File(pastaImagem, new Date().getTime() + "." + extension);
 	}
 
 	@Override
@@ -198,8 +169,7 @@ public class ProdutosServiceImpl implements ProdutosService {
 			imagemProdutoDTO.setIdImagemProduto(imagem.getIdImagemProduto());
 			imagemProdutoDTO.setImagemPrincipal(imagem.getImagemPrincipal());
 			imagemProdutoDTO.setLocal(imagem.getCaminho());
-			imagemProdutoDTO.setContent(ImageUtil.criarBase64(imagem.getCaminho()));
-			imagemProdutoDTO.setType(ImageUtil.getType(imagem.getCaminho()));
+
 			return imagemProdutoDTO;
 
 		}).collect(Collectors.toList());

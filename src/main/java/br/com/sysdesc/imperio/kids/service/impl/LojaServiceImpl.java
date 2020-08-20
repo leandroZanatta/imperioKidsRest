@@ -12,9 +12,7 @@ import org.springframework.stereotype.Service;
 import br.com.sysdesc.imperio.kids.dto.ProdutoLojaDTO;
 import br.com.sysdesc.imperio.kids.repository.ProdutoRepository;
 import br.com.sysdesc.imperio.kids.service.LojaService;
-import br.com.sysdesc.imperio.kids.util.ImageUtil;
 import br.com.sysdesc.imperio.kids.util.LongUtil;
-import br.com.sysdesc.imperio.kids.util.StringUtil;
 
 @Service
 public class LojaServiceImpl implements LojaService {
@@ -36,11 +34,7 @@ public class LojaServiceImpl implements LojaService {
 			produtoLojaDTO.setDescricao(produto.getDescricao());
 			produtoLojaDTO.setProdutoPromocao(Boolean.FALSE);
 			produtoLojaDTO.setPrecoBase(BigDecimal.TEN);
-
-			if (!StringUtil.isNullOrEmpty(produto.getCaminho())) {
-				produtoLojaDTO.setImageType(ImageUtil.getType(produto.getCaminho()));
-				produtoLojaDTO.setImageContent(ImageUtil.criarBase64(produto.getCaminho()));
-			}
+			produtoLojaDTO.setImageUrl(produto.getCaminho());
 
 			return produtoLojaDTO;
 		}).collect(Collectors.toList()), PageRequest.of(pagina.intValue(), limit.intValue()), totalRegistros);

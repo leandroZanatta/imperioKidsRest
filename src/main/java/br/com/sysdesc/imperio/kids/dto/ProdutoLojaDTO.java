@@ -9,9 +9,7 @@ public class ProdutoLojaDTO {
 
 	private String descricao;
 
-	private String imageType;
-
-	private String imageContent;
+	private String imageUrl;
 
 	private Boolean produtoPromocao;
 
