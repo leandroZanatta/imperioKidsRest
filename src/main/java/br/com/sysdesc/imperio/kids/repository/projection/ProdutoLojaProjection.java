@@ -5,6 +5,8 @@ import lombok.Data;
 @Data
 public class ProdutoLojaProjection {
 
+	private Long idProduto;
+
 	private String descricao;
 
 	private String caminho;

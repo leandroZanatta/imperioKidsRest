@@ -31,6 +31,7 @@ public class LojaServiceImpl implements LojaService {
 		return new PageImpl<>(produtoRepository.buscarProdutos(pagina, limit).stream().map(produto -> {
 
 			ProdutoLojaDTO produtoLojaDTO = new ProdutoLojaDTO();
+			produtoLojaDTO.setIdProduto(produto.getIdProduto());
 			produtoLojaDTO.setDescricao(produto.getDescricao());
 			produtoLojaDTO.setProdutoPromocao(Boolean.FALSE);
 			produtoLojaDTO.setPrecoBase(BigDecimal.TEN);

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 
 import br.com.sysdesc.imperio.kids.dto.CadastroImagemProdutoDTO;
+import br.com.sysdesc.imperio.kids.dto.DetalheProdutoDTO;
 import br.com.sysdesc.imperio.kids.dto.ImagemProdutoDTO;
 import br.com.sysdesc.imperio.kids.dto.ProdutoDTO;
 
@@ -21,4 +22,8 @@ public interface ProdutosService {
 	public abstract void adicionarImagem(CadastroImagemProdutoDTO imagemProdutoDTO);
 
 	public abstract List<ImagemProdutoDTO> listarImagens(Long codigoProduto);
+
+	public abstract void editarImagemPrincipal(Long codigoProduto, Long codigoImagem);
+
+	public abstract DetalheProdutoDTO buscarDetalhes(Long codigoProduto);
 }

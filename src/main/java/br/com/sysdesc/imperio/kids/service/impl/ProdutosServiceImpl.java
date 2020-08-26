@@ -10,6 +10,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import br.com.sysdesc.imperio.kids.dto.CadastroImagemProdutoDTO;
+import br.com.sysdesc.imperio.kids.dto.DetalheProdutoDTO;
+import br.com.sysdesc.imperio.kids.dto.ImagemDetalheProdutoDTO;
 import br.com.sysdesc.imperio.kids.dto.ImagemProdutoDTO;
 import br.com.sysdesc.imperio.kids.dto.ProdutoDTO;
 import br.com.sysdesc.imperio.kids.repository.CategoriasRepository;
@@ -173,6 +175,31 @@ public class ProdutosServiceImpl implements ProdutosService {
 			return imagemProdutoDTO;
 
 		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public void editarImagemPrincipal(Long codigoProduto, Long codigoImagem) {
+
+		List<ImagemProduto> imagens = imagemProdutoRepository.findByCodigoProduto(codigoProduto);
+
+		imagens.stream().forEach(imagem -> imagem.setImagemPrincipal(codigoImagem.equals(imagem.getIdImagemProduto())));
+
+		imagemProdutoRepository.saveAll(imagens);
+	}
+
+	@Override
+	public DetalheProdutoDTO buscarDetalhes(Long codigoProduto) {
+		DetalheProdutoDTO detalheProdutoDTO = new DetalheProdutoDTO();
+
+		detalheProdutoDTO.setImagens(buscarImagemProdutos(codigoProduto));
+
+		return detalheProdutoDTO;
+	}
+
+	private List<ImagemDetalheProdutoDTO> buscarImagemProdutos(Long codigoProduto) {
+
+		return imagemProdutoRepository.findByCodigoProduto(codigoProduto).stream()
+				.map(imagem -> new ImagemDetalheProdutoDTO(imagem.getCaminho(), imagem.getCaminho())).collect(Collectors.toList());
 	}
 
 }

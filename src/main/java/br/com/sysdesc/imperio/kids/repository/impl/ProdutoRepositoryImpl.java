@@ -36,7 +36,7 @@ public class ProdutoRepositoryImpl extends QuerydslRepositorySupport implements 
 
 		JPASQLQuery<ProdutoLojaProjection> sql = montarQueryProdutos();
 
-		sql.select(Projections.fields(ProdutoLojaProjection.class, produto.descricao, imagemProduto.caminho));
+		sql.select(Projections.fields(ProdutoLojaProjection.class, produto.idProduto, produto.descricao, imagemProduto.caminho));
 
 		return sql.fetch();
 	}

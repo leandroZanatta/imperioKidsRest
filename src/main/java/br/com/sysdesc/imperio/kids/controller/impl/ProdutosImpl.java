@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.sysdesc.imperio.kids.controller.Produtos;
 import br.com.sysdesc.imperio.kids.dto.CadastroImagemProdutoDTO;
+import br.com.sysdesc.imperio.kids.dto.DetalheProdutoDTO;
 import br.com.sysdesc.imperio.kids.dto.ImagemProdutoDTO;
 import br.com.sysdesc.imperio.kids.dto.ProdutoDTO;
 import br.com.sysdesc.imperio.kids.service.ProdutosService;
@@ -80,6 +81,22 @@ public class ProdutosImpl implements Produtos {
 	public ResponseEntity<List<ImagemProdutoDTO>> listarImagens(@PathVariable("codigoProduto") Long codigoProduto) {
 
 		return ResponseEntity.ok(produtosService.listarImagens(codigoProduto));
+	}
+
+	@Override
+	@PutMapping(path = "/{codigoProduto}/imagem/{codigoImagem}")
+	public ResponseEntity<Void> editarImagemPrincipal(@PathVariable("codigoProduto") Long codigoProduto,
+			@PathVariable("codigoImagem") Long codigoImagem) {
+		produtosService.editarImagemPrincipal(codigoProduto, codigoImagem);
+
+		return new ResponseEntity<>(HttpStatus.ACCEPTED);
+	}
+
+	@Override
+	@GetMapping("/detalhes/{codigoProduto}")
+	public ResponseEntity<DetalheProdutoDTO> buscarDetalhes(@PathVariable("codigoProduto") Long codigoProduto) {
+
+		return ResponseEntity.ok(produtosService.buscarDetalhes(codigoProduto));
 	}
 
 }

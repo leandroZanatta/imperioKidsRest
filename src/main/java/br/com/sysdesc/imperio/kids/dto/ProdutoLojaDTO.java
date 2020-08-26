@@ -7,6 +7,8 @@ import lombok.Data;
 @Data
 public class ProdutoLojaDTO {
 
+	private Long idProduto;
+
 	private String descricao;
 
 	private String imageUrl;
