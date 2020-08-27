@@ -8,4 +8,6 @@ import lombok.Data;
 public class DetalheProdutoDTO {
 
 	private List<ImagemDetalheProdutoDTO> imagens;
+
+	private List<EstruturaProdutoDTO> estruturaProduto;
 }

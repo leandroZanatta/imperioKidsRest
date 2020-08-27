@@ -1,8 +1,11 @@
 package br.com.sysdesc.imperio.kids.service;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 
 import br.com.sysdesc.imperio.kids.dto.CategoriaDTO;
+import br.com.sysdesc.imperio.kids.dto.EstruturaCategoriaDTO;
 
 public interface CategoriasService {
 
@@ -13,4 +16,6 @@ public interface CategoriasService {
 	public abstract void excluir(Long codigoCategoria);
 
 	public abstract void reincluir(Long codigoCategoria);
+
+	public abstract List<EstruturaCategoriaDTO> obterEstrutura();
 }

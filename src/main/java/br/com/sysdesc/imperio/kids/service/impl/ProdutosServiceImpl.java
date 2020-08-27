@@ -1,5 +1,7 @@
 package br.com.sysdesc.imperio.kids.service.impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import br.com.sysdesc.imperio.kids.dto.CadastroImagemProdutoDTO;
 import br.com.sysdesc.imperio.kids.dto.DetalheProdutoDTO;
+import br.com.sysdesc.imperio.kids.dto.EstruturaProdutoDTO;
 import br.com.sysdesc.imperio.kids.dto.ImagemDetalheProdutoDTO;
 import br.com.sysdesc.imperio.kids.dto.ImagemProdutoDTO;
 import br.com.sysdesc.imperio.kids.dto.ProdutoDTO;
@@ -191,9 +194,29 @@ public class ProdutosServiceImpl implements ProdutosService {
 	public DetalheProdutoDTO buscarDetalhes(Long codigoProduto) {
 		DetalheProdutoDTO detalheProdutoDTO = new DetalheProdutoDTO();
 
+		Produto produto = buscarBuscaProduto(codigoProduto);
+
+		List<EstruturaProdutoDTO> estrutura = new ArrayList<>();
+
+		criarEstruturaProdutos(produto.getCategoria(), estrutura);
+
+		Collections.reverse(estrutura);
+
 		detalheProdutoDTO.setImagens(buscarImagemProdutos(codigoProduto));
+		detalheProdutoDTO.setEstruturaProduto(estrutura);
 
 		return detalheProdutoDTO;
+	}
+
+	private void criarEstruturaProdutos(Categoria categoria, List<EstruturaProdutoDTO> estrutura) {
+
+		estrutura.add(new EstruturaProdutoDTO(categoria.getIdCategoria(), categoria.getDescricao()));
+
+		if (categoria.getCategoria() != null) {
+
+			criarEstruturaProdutos(categoria.getCategoria(), estrutura);
+		}
+
 	}
 
 	private List<ImagemDetalheProdutoDTO> buscarImagemProdutos(Long codigoProduto) {

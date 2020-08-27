@@ -1,5 +1,7 @@
 package br.com.sysdesc.imperio.kids.controller.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.sysdesc.imperio.kids.controller.Categorias;
 import br.com.sysdesc.imperio.kids.dto.CategoriaDTO;
+import br.com.sysdesc.imperio.kids.dto.EstruturaCategoriaDTO;
 import br.com.sysdesc.imperio.kids.service.CategoriasService;
 
 @CrossOrigin
@@ -28,6 +31,13 @@ public class CategoriasImpl implements Categorias {
 	@Autowired
 	@Lazy
 	private CategoriasService categoriasService;
+
+	@Override
+	@GetMapping("/estrutura")
+	public ResponseEntity<List<EstruturaCategoriaDTO>> obterEstrutura() {
+
+		return ResponseEntity.ok(categoriasService.obterEstrutura());
+	}
 
 	@Override
 	@GetMapping

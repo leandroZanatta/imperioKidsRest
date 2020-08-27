@@ -1,5 +1,8 @@
 package br.com.sysdesc.imperio.kids.service.impl;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
@@ -7,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import br.com.sysdesc.imperio.kids.dto.CategoriaDTO;
+import br.com.sysdesc.imperio.kids.dto.EstruturaCategoriaDTO;
 import br.com.sysdesc.imperio.kids.repository.CategoriasRepository;
 import br.com.sysdesc.imperio.kids.repository.domain.Categoria;
 import br.com.sysdesc.imperio.kids.service.CategoriasService;
@@ -115,4 +119,24 @@ public class CategoriasServiceImpl implements CategoriasService {
 				.orElseThrow(() -> new SysDescException("Categoria Não encontrada"));
 	}
 
+	@Override
+	public List<EstruturaCategoriaDTO> obterEstrutura() {
+
+		return montarEstrutura(categoriasRepository.findByDataExclusaoIsNullAndCodigoCategoriaIsNull());
+	}
+
+	private List<EstruturaCategoriaDTO> montarEstrutura(List<Categoria> categorias) {
+
+		return categorias.stream().filter(categoria -> categoria.getDataExclusao() == null).map(categoria -> {
+			EstruturaCategoriaDTO estruturaCategoriaDTO = new EstruturaCategoriaDTO();
+			estruturaCategoriaDTO.setCodigoCategoria(categoria.getIdCategoria());
+			estruturaCategoriaDTO.setDescricao(categoria.getDescricao());
+
+			if (!categoria.getSubCategorias().isEmpty()) {
+				estruturaCategoriaDTO.setSubcategorias(montarEstrutura(categoria.getSubCategorias()));
+			}
+
+			return estruturaCategoriaDTO;
+		}).collect(Collectors.toList());
+	}
 }
