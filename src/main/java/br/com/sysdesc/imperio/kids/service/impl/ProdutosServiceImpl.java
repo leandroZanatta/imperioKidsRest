@@ -201,7 +201,8 @@ public class ProdutosServiceImpl implements ProdutosService {
 		criarEstruturaProdutos(produto.getCategoria(), estrutura);
 
 		Collections.reverse(estrutura);
-
+		detalheProdutoDTO.setNome(produto.getDescricao());
+		detalheProdutoDTO.setDescricao(produto.getDescricaoConteudo());
 		detalheProdutoDTO.setImagens(buscarImagemProdutos(codigoProduto));
 		detalheProdutoDTO.setEstruturaProduto(estrutura);
 
