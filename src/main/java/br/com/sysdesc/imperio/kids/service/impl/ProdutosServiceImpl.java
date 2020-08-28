@@ -134,18 +134,6 @@ public class ProdutosServiceImpl implements ProdutosService {
 		produtoRepository.save(produto);
 	}
 
-	private Categoria buscarCategoria(Long codigoCategoria) {
-
-		return categoriasRepository.findById(codigoCategoria)
-				.orElseThrow(() -> new SysDescException("Categoria não encontrada"));
-	}
-
-	private Produto buscarBuscaProduto(Long codigoProduto) {
-
-		return produtoRepository.findById(codigoProduto)
-				.orElseThrow(() -> new SysDescException("Produto não encontrado"));
-	}
-
 	@Override
 	public void adicionarImagem(CadastroImagemProdutoDTO imagemProdutoDTO) {
 
@@ -158,11 +146,6 @@ public class ProdutosServiceImpl implements ProdutosService {
 
 		imagemProdutoRepository.save(imagemProduto);
 
-	}
-
-	private boolean existeImagemCadastrada(Long codigoProduto) {
-
-		return imagemProdutoRepository.existsByCodigoProduto(codigoProduto);
 	}
 
 	@Override
@@ -220,10 +203,48 @@ public class ProdutosServiceImpl implements ProdutosService {
 
 	}
 
+	@Override
+	public void excluirImagem(Long idImagem) {
+
+		ImagemProduto imagemProduto = buscarImagemProduto(idImagem);
+
+		if (imagemProduto.getImagemPrincipal()) {
+
+			throw new SysDescException("Não é possivel excluir a imagem principal");
+		}
+
+		amazonService.deleteFile(imagemProduto.getCaminho());
+
+		imagemProdutoRepository.delete(imagemProduto);
+
+	}
+
+	private ImagemProduto buscarImagemProduto(Long idImagem) {
+
+		return imagemProdutoRepository.findById(idImagem)
+				.orElseThrow(() -> new SysDescException("Imagem do produto não encontrada"));
+	}
+
 	private List<ImagemDetalheProdutoDTO> buscarImagemProdutos(Long codigoProduto) {
 
 		return imagemProdutoRepository.findByCodigoProduto(codigoProduto).stream()
 				.map(imagem -> new ImagemDetalheProdutoDTO(imagem.getCaminho(), imagem.getCaminho())).collect(Collectors.toList());
 	}
 
+	private Categoria buscarCategoria(Long codigoCategoria) {
+
+		return categoriasRepository.findById(codigoCategoria)
+				.orElseThrow(() -> new SysDescException("Categoria não encontrada"));
+	}
+
+	private Produto buscarBuscaProduto(Long codigoProduto) {
+
+		return produtoRepository.findById(codigoProduto)
+				.orElseThrow(() -> new SysDescException("Produto não encontrado"));
+	}
+
+	private boolean existeImagemCadastrada(Long codigoProduto) {
+
+		return imagemProdutoRepository.existsByCodigoProduto(codigoProduto);
+	}
 }

@@ -28,4 +28,6 @@ public interface Produtos {
 	public ResponseEntity<Void> adicionarImagem(CadastroImagemProdutoDTO imagemProdutoDTO);
 
 	public ResponseEntity<Void> editarImagemPrincipal(Long codigoProduto, Long codigoImagem);
+
+	public ResponseEntity<Void> excluirImagem(Long idImagem);
 }

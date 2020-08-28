@@ -26,4 +26,6 @@ public interface ProdutosService {
 	public abstract void editarImagemPrincipal(Long codigoProduto, Long codigoImagem);
 
 	public abstract DetalheProdutoDTO buscarDetalhes(Long codigoProduto);
+
+	public abstract void excluirImagem(Long idImagem);
 }

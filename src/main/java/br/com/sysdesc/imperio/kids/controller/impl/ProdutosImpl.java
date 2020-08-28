@@ -99,4 +99,13 @@ public class ProdutosImpl implements Produtos {
 		return ResponseEntity.ok(produtosService.buscarDetalhes(codigoProduto));
 	}
 
+	@Override
+	@DeleteMapping(path = "/imagem/{idImagem}")
+	public ResponseEntity<Void> excluirImagem(@PathVariable("idImagem") Long idImagem) {
+
+		produtosService.excluirImagem(idImagem);
+
+		return new ResponseEntity<>(HttpStatus.ACCEPTED);
+	}
+
 }
