@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import br.com.sysdesc.imperio.kids.dto.EstruturaCategoriaDTO;
 import br.com.sysdesc.imperio.kids.repository.CategoriasRepository;
 import br.com.sysdesc.imperio.kids.repository.domain.Categoria;
 import br.com.sysdesc.imperio.kids.service.CategoriasService;
+import br.com.sysdesc.imperio.kids.service.EstruturaProdutoService;
 import br.com.sysdesc.imperio.kids.util.DateUtil;
 import br.com.sysdesc.imperio.kids.util.LongUtil;
 import br.com.sysdesc.imperio.kids.util.StringUtil;
@@ -26,39 +28,29 @@ public class CategoriasServiceImpl implements CategoriasService {
 	@Lazy
 	private CategoriasRepository categoriasRepository;
 
+	@Autowired
+	@Lazy
+	private EstruturaProdutoService estruturaProdutoService;
+
 	@Override
-	public Page<CategoriaDTO> listar(String valorPesquisa, Long pagina, Long registros) {
+	public Page<CategoriaDTO> listar(String valorPesquisa, Long pagina, Long registros, Boolean filtrarExcluidos) {
 
-		if (!StringUtil.isNullOrEmpty(valorPesquisa)) {
+		List<CategoriaDTO> categorias = categoriasRepository.buscarCategorias(valorPesquisa, pagina, registros, filtrarExcluidos).stream()
+				.map(this::map).collect(Collectors.toList());
 
-			return map(categoriasRepository.findByDescricaoLikeIgnoreCase(String.format("%%%s%%", valorPesquisa),
-					PageRequest.of(pagina.intValue(), registros.intValue())));
+		if (LongUtil.isNullOrZero(pagina)) {
+
+			return new PageImpl<>(categorias, PageRequest.of(pagina.intValue(), registros.intValue()),
+					categoriasRepository.contarCategorias(valorPesquisa, filtrarExcluidos));
 		}
 
-		return map(categoriasRepository.findAll(PageRequest.of(pagina.intValue(), registros.intValue())));
+		return new PageImpl<>(categorias);
 	}
 
-	private Page<CategoriaDTO> map(Page<Categoria> pagina) {
+	@Override
+	public CategoriaDTO buscarPorId(Long codigoCategoria) {
 
-		return pagina.map(categoria -> {
-
-			CategoriaDTO categoriaDTO = new CategoriaDTO();
-			categoriaDTO.setCodigoCategoria(categoria.getCodigoCategoria());
-			categoriaDTO.setDescricao(categoria.getDescricao());
-			categoriaDTO.setIdCategoria(categoria.getIdCategoria());
-
-			if (categoria.getCategoria() != null) {
-
-				categoriaDTO.setDescricaoPai(categoria.getCategoria().getDescricao());
-			}
-
-			if (categoria.getDataExclusao() != null) {
-
-				categoriaDTO.setDataExclusao(DateUtil.formatString(categoria.getDataExclusao(), DateUtil.FORMATO_DD_MM_YYYY));
-			}
-
-			return categoriaDTO;
-		});
+		return map(buscarCategoria(codigoCategoria));
 	}
 
 	@Override
@@ -99,6 +91,11 @@ public class CategoriasServiceImpl implements CategoriasService {
 
 		Categoria categoria = buscarCategoria(codigoCategoria);
 
+		if (!categoria.getEstruturaMercadologicas().isEmpty()) {
+
+			throw new SysDescException("Não é possivel excluir categoria com produtos vinculados.");
+		}
+
 		categoria.setDataExclusao(DateUtil.getDateTimeNow());
 
 		categoriasRepository.save(categoria);
@@ -123,6 +120,27 @@ public class CategoriasServiceImpl implements CategoriasService {
 	public List<EstruturaCategoriaDTO> obterEstrutura() {
 
 		return montarEstrutura(categoriasRepository.findByDataExclusaoIsNullAndCodigoCategoriaIsNull());
+	}
+
+	private CategoriaDTO map(Categoria categoria) {
+
+		CategoriaDTO categoriaDTO = new CategoriaDTO();
+		categoriaDTO.setCodigoCategoria(categoria.getCodigoCategoria());
+		categoriaDTO.setDescricao(categoria.getDescricao());
+		categoriaDTO.setIdCategoria(categoria.getIdCategoria());
+		categoriaDTO.setNumeroProdutos(Long.valueOf(categoria.getEstruturaMercadologicas().size()));
+
+		if (categoria.getCategoria() != null) {
+
+			categoriaDTO.setEstruturaMercadologica(estruturaProdutoService.criarEstruturaProdutos(categoria.getCategoria()));
+		}
+
+		if (categoria.getDataExclusao() != null) {
+
+			categoriaDTO.setDataExclusao(DateUtil.formatString(categoria.getDataExclusao(), DateUtil.FORMATO_DD_MM_YYYY));
+		}
+
+		return categoriaDTO;
 	}
 
 	private List<EstruturaCategoriaDTO> montarEstrutura(List<Categoria> categorias) {

@@ -30,6 +30,8 @@ public class QCategoria extends EntityPathBase<Categoria> {
 
     public final StringPath descricao = createString("descricao");
 
+    public final ListPath<EstruturaMercadologica, QEstruturaMercadologica> estruturaMercadologicas = this.<EstruturaMercadologica, QEstruturaMercadologica>createList("estruturaMercadologicas", EstruturaMercadologica.class, QEstruturaMercadologica.class, PathInits.DIRECT2);
+
     public final NumberPath<Long> idCategoria = createNumber("idCategoria", Long.class);
 
     public final ListPath<Produto, QProduto> produtos = this.<Produto, QProduto>createList("produtos", Produto.class, QProduto.class, PathInits.DIRECT2);

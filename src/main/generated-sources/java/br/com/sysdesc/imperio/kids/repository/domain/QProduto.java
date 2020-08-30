@@ -34,7 +34,13 @@ public class QProduto extends EntityPathBase<Produto> {
 
     public final StringPath descricaoConteudo = createString("descricaoConteudo");
 
+    public final ListPath<EstruturaMercadologica, QEstruturaMercadologica> estruturaMercadologicas = this.<EstruturaMercadologica, QEstruturaMercadologica>createList("estruturaMercadologicas", EstruturaMercadologica.class, QEstruturaMercadologica.class, PathInits.DIRECT2);
+
     public final NumberPath<Long> idProduto = createNumber("idProduto", Long.class);
+
+    public final NumberPath<java.math.BigDecimal> preco = createNumber("preco", java.math.BigDecimal.class);
+
+    public final ListPath<PrecoTemporario, QPrecoTemporario> precosTemporarios = this.<PrecoTemporario, QPrecoTemporario>createList("precosTemporarios", PrecoTemporario.class, QPrecoTemporario.class, PathInits.DIRECT2);
 
     public final BooleanPath produtoDestaque = createBoolean("produtoDestaque");
 

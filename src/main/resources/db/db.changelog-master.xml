@@ -15,6 +15,9 @@
 	<include file="db/changeset/20200814_234400_tb_produto.xml" />
 	<include file="db/changeset/20200814_234900_tb_controleestoque.xml" />
 	<include file="db/changeset/20200818_200700_tb_imagemproduto.xml" />
+	<include file="db/changeset/20200828_202600_tb_estruturamercadologica.xml" />
+	<include file="db/changeset/20200929_193400_tb_historicoprecos.xml" />
+	<include file="db/changeset/20200929_194100_tb_precotemporario.xml" />
 
 	<include file="db/db.inserts.xml" />
 

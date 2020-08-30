@@ -17,6 +17,9 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import lombok.Data;
 
 @Data
@@ -50,5 +53,9 @@ public class Categoria implements Serializable {
 
 	@OneToMany(mappedBy = "categoria")
 	private List<Produto> produtos;
+
+	@OneToMany(mappedBy = "categoria")
+	@Fetch(FetchMode.SUBSELECT)
+	private List<EstruturaMercadologica> estruturaMercadologicas;
 
 }

@@ -9,7 +9,7 @@ import br.com.sysdesc.imperio.kids.dto.EstruturaCategoriaDTO;
 
 public interface CategoriasService {
 
-	public abstract Page<CategoriaDTO> listar(String valorPesquisa, Long pagina, Long registros);
+	public abstract Page<CategoriaDTO> listar(String valorPesquisa, Long pagina, Long registros, Boolean filtrarExcluidos);
 
 	public abstract void salvar(CategoriaDTO categoriaDTO);
 
@@ -18,4 +18,6 @@ public interface CategoriasService {
 	public abstract void reincluir(Long codigoCategoria);
 
 	public abstract List<EstruturaCategoriaDTO> obterEstrutura();
+
+	public abstract CategoriaDTO buscarPorId(Long codigoCategoria);
 }

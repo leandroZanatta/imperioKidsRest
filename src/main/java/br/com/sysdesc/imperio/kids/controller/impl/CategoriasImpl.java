@@ -42,9 +42,10 @@ public class CategoriasImpl implements Categorias {
 	@Override
 	@GetMapping
 	public ResponseEntity<Page<CategoriaDTO>> listar(@RequestParam("valorPesquisa") String valorPesquisa,
-			@RequestParam("pagina") Long pagina, @RequestParam("registros") Long registros) {
+			@RequestParam("pagina") Long pagina, @RequestParam("registros") Long registros,
+			@RequestParam(name = "filtrarExcluidos", required = false) Boolean filtrarExcluidos) {
 
-		return ResponseEntity.ok(categoriasService.listar(valorPesquisa, pagina, registros));
+		return ResponseEntity.ok(categoriasService.listar(valorPesquisa, pagina, registros, filtrarExcluidos));
 	}
 
 	@Override
@@ -53,6 +54,13 @@ public class CategoriasImpl implements Categorias {
 		categoriasService.salvar(categoriaDTO);
 
 		return new ResponseEntity<>(HttpStatus.CREATED);
+	}
+
+	@Override
+	@GetMapping(path = "/{codigoCategoria}")
+	public ResponseEntity<CategoriaDTO> buscarPorId(@PathVariable("codigoCategoria") Long codigoCategoria) {
+
+		return ResponseEntity.ok(categoriasService.buscarPorId(codigoCategoria));
 	}
 
 	@Override

@@ -1,5 +1,8 @@
 package br.com.sysdesc.imperio.kids.dto;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 import lombok.Data;
 
 @Data
@@ -10,6 +13,8 @@ public class ProdutoDTO {
 	private Long codigoCategoria;
 
 	private Long codigoUnidade;
+
+	private List<EstruturaProdutoDTO> estruturaMercadologica;
 
 	private String descricao;
 
@@ -22,5 +27,7 @@ public class ProdutoDTO {
 	private Boolean produtoDestaque;
 
 	private String dataExclusao;
+
+	private BigDecimal preco;
 
 }

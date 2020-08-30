@@ -56,4 +56,13 @@
 
 	</changeSet>
 
+	<changeSet id="20200929_193200" author="leandro">
+
+		<addColumn tableName="tb_produto">
+			<column name="vl_preco" type="${numeric.18x2}" defaultValueNumeric="0">
+				<constraints nullable="true" />
+			</column>
+		</addColumn>
+	</changeSet>
+
 </databaseChangeLog>

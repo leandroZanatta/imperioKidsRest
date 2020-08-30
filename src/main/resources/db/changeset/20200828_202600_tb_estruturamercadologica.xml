@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd  http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+	<changeSet id="20200828_202600" author="leandro">
+
+		<preConditions onFail="CONTINUE">
+			<not>
+				<tableExists tableName="tb_estruturamercadologica" />
+			</not>
+		</preConditions>
+
+		<createTable tableName="tb_estruturamercadologica">
+
+			<column name="id_estruturamercadologica" type="${numeric.18x0}" remarks="CÓDIGO INDENTIFICADOR">
+				<constraints primaryKey="true" primaryKeyName="estruturamercadologica_pk" nullable="false" />
+			</column>
+
+			<column name="cd_produto" type="${numeric.18x0}" remarks="CÓDIGO DO PRODUTO">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="cd_categoria" type="${numeric.18x0}" remarks="CÓDIGO DA CATEGORIA">
+				<constraints nullable="false" />
+			</column>
+
+		</createTable>
+
+		<createSequence sequenceName="gen_estruturamercadologica" />
+
+		<addForeignKeyConstraint baseColumnNames="cd_produto" baseTableName="tb_estruturamercadologica"
+			constraintName="fk_estrutura_produto" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id_produto" referencedTableName="tb_produto" />
+
+		<addForeignKeyConstraint baseColumnNames="cd_categoria" baseTableName="tb_estruturamercadologica"
+			constraintName="fk_estrutura_categoria" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id_categoria"
+			referencedTableName="tb_categoria" />
+
+	</changeSet>
+
+</databaseChangeLog>

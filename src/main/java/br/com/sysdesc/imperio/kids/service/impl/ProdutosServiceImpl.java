@@ -1,7 +1,7 @@
 package br.com.sysdesc.imperio.kids.service.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import br.com.sysdesc.imperio.kids.dto.CadastroImagemProdutoDTO;
 import br.com.sysdesc.imperio.kids.dto.DetalheProdutoDTO;
-import br.com.sysdesc.imperio.kids.dto.EstruturaProdutoDTO;
 import br.com.sysdesc.imperio.kids.dto.ImagemDetalheProdutoDTO;
 import br.com.sysdesc.imperio.kids.dto.ImagemProdutoDTO;
 import br.com.sysdesc.imperio.kids.dto.ProdutoDTO;
@@ -21,9 +20,11 @@ import br.com.sysdesc.imperio.kids.repository.CategoriasRepository;
 import br.com.sysdesc.imperio.kids.repository.ImagemProdutoRepository;
 import br.com.sysdesc.imperio.kids.repository.ProdutoRepository;
 import br.com.sysdesc.imperio.kids.repository.domain.Categoria;
+import br.com.sysdesc.imperio.kids.repository.domain.EstruturaMercadologica;
 import br.com.sysdesc.imperio.kids.repository.domain.ImagemProduto;
 import br.com.sysdesc.imperio.kids.repository.domain.Produto;
 import br.com.sysdesc.imperio.kids.service.AmazonService;
+import br.com.sysdesc.imperio.kids.service.EstruturaProdutoService;
 import br.com.sysdesc.imperio.kids.service.ProdutosService;
 import br.com.sysdesc.imperio.kids.util.DateUtil;
 import br.com.sysdesc.imperio.kids.util.LongUtil;
@@ -49,6 +50,10 @@ public class ProdutosServiceImpl implements ProdutosService {
 	@Lazy
 	private AmazonService amazonService;
 
+	@Autowired
+	@Lazy
+	private EstruturaProdutoService estruturaProdutoService;
+
 	@Override
 	public Page<ProdutoDTO> listar(String valorPesquisa, Long pagina, Long registros) {
 
@@ -59,28 +64,6 @@ public class ProdutosServiceImpl implements ProdutosService {
 		}
 
 		return map(produtoRepository.findAll(PageRequest.of(pagina.intValue(), registros.intValue())));
-	}
-
-	private Page<ProdutoDTO> map(Page<Produto> pagina) {
-
-		return pagina.map(produto -> {
-			ProdutoDTO produtoDTO = new ProdutoDTO();
-
-			produtoDTO.setIdProduto(produto.getIdProduto());
-			produtoDTO.setDescricao(produto.getDescricao());
-			produtoDTO.setDescricaoConteudo(produto.getDescricaoConteudo());
-			produtoDTO.setCodigoCategoria(produto.getCategoria().getIdCategoria());
-			produtoDTO.setCodigoUnidade(produto.getCodigoUnidade());
-			produtoDTO.setControlaEstoque(produto.getControlaEstoque());
-			produtoDTO.setProdutoOferta(produto.getProdutoOferta());
-			produtoDTO.setProdutoDestaque(produto.getProdutoDestaque());
-
-			if (produto.getDataExclusao() != null) {
-				produtoDTO.setDataExclusao(DateUtil.formatString(produto.getDataExclusao(), DateUtil.FORMATO_DD_MM_YYYY));
-			}
-
-			return produtoDTO;
-		});
 	}
 
 	@Override
@@ -97,15 +80,17 @@ public class ProdutosServiceImpl implements ProdutosService {
 			}
 		}
 
-		Produto produto = new Produto();
-		produto.setIdProduto(produtoDTO.getIdProduto());
+		Categoria categoria = buscarCategoria(produtoDTO.getCodigoCategoria());
+
+		Produto produto = getProduto(produtoDTO.getIdProduto());
 		produto.setDescricao(produtoDTO.getDescricao());
 		produto.setDescricaoConteudo(produtoDTO.getDescricaoConteudo());
 		produto.setCodigoUnidade(produtoDTO.getCodigoUnidade());
 		produto.setControlaEstoque(produtoDTO.getControlaEstoque());
 		produto.setProdutoOferta(produtoDTO.getProdutoOferta());
-		produto.setCategoria(buscarCategoria(produtoDTO.getCodigoCategoria()));
+		produto.setCategoria(categoria);
 		produto.setProdutoDestaque(produtoDTO.getProdutoDestaque());
+		produto.setEstruturaMercadologicas(montarEstruturaMercadologica(produto, categoria));
 
 		if (produtoDTO.getDataExclusao() != null) {
 			produto.setDataExclusao(DateUtil.parseDate(produtoDTO.getDataExclusao(), DateUtil.FORMATO_DD_MM_YYYY));
@@ -115,9 +100,21 @@ public class ProdutosServiceImpl implements ProdutosService {
 
 	}
 
+	private Produto getProduto(Long idProduto) {
+
+		if (!LongUtil.isNullOrZero(idProduto)) {
+			return produtoRepository.findById(idProduto).orElseThrow(() -> new SysDescException("Produto não encontrado"));
+		}
+
+		Produto produto = new Produto();
+		produto.setIdProduto(idProduto);
+
+		return produto;
+	}
+
 	@Override
 	public void excluir(Long codigoProduto) {
-		Produto produto = buscarBuscaProduto(codigoProduto);
+		Produto produto = buscarProduto(codigoProduto);
 
 		produto.setDataExclusao(DateUtil.getDateTimeNow());
 
@@ -127,7 +124,7 @@ public class ProdutosServiceImpl implements ProdutosService {
 
 	@Override
 	public void reincluir(Long codigoProduto) {
-		Produto produto = buscarBuscaProduto(codigoProduto);
+		Produto produto = buscarProduto(codigoProduto);
 
 		produto.setDataExclusao(null);
 
@@ -141,7 +138,7 @@ public class ProdutosServiceImpl implements ProdutosService {
 
 		ImagemProduto imagemProduto = new ImagemProduto();
 		imagemProduto.setCaminho(urlArquivo);
-		imagemProduto.setProduto(buscarBuscaProduto(imagemProdutoDTO.getCodigoProduto()));
+		imagemProduto.setProduto(buscarProduto(imagemProdutoDTO.getCodigoProduto()));
 		imagemProduto.setImagemPrincipal(!existeImagemCadastrada(imagemProdutoDTO.getCodigoProduto()));
 
 		imagemProdutoRepository.save(imagemProduto);
@@ -177,30 +174,62 @@ public class ProdutosServiceImpl implements ProdutosService {
 	public DetalheProdutoDTO buscarDetalhes(Long codigoProduto) {
 		DetalheProdutoDTO detalheProdutoDTO = new DetalheProdutoDTO();
 
-		Produto produto = buscarBuscaProduto(codigoProduto);
+		Produto produto = buscarProduto(codigoProduto);
 
-		List<EstruturaProdutoDTO> estrutura = new ArrayList<>();
-
-		criarEstruturaProdutos(produto.getCategoria(), estrutura);
-
-		Collections.reverse(estrutura);
 		detalheProdutoDTO.setNome(produto.getDescricao());
 		detalheProdutoDTO.setDescricao(produto.getDescricaoConteudo());
 		detalheProdutoDTO.setImagens(buscarImagemProdutos(codigoProduto));
-		detalheProdutoDTO.setEstruturaProduto(estrutura);
+		detalheProdutoDTO.setEstruturaProduto(estruturaProdutoService.criarEstruturaProdutos(produto.getCategoria()));
 
 		return detalheProdutoDTO;
 	}
 
-	private void criarEstruturaProdutos(Categoria categoria, List<EstruturaProdutoDTO> estrutura) {
+	private List<EstruturaMercadologica> montarEstruturaMercadologica(Produto produto, Categoria categoria) {
+		List<EstruturaMercadologica> estruturaMercadologicas = new ArrayList<>();
 
-		estrutura.add(new EstruturaProdutoDTO(categoria.getIdCategoria(), categoria.getDescricao()));
+		mapearEstrutura(produto, categoria, estruturaMercadologicas);
+
+		return estruturaMercadologicas;
+	}
+
+	private void mapearEstrutura(Produto produto, Categoria categoria, List<EstruturaMercadologica> estruturaMercadologicas) {
+
+		EstruturaMercadologica estruturaMercadologica = new EstruturaMercadologica();
+		estruturaMercadologica.setCategoria(categoria);
+		estruturaMercadologica.setProduto(produto);
+
+		estruturaMercadologicas.add(estruturaMercadologica);
 
 		if (categoria.getCategoria() != null) {
-
-			criarEstruturaProdutos(categoria.getCategoria(), estrutura);
+			mapearEstrutura(produto, categoria.getCategoria(), estruturaMercadologicas);
 		}
+	}
 
+	private Page<ProdutoDTO> map(Page<Produto> pagina) {
+
+		return pagina.map(produto -> {
+			ProdutoDTO produtoDTO = new ProdutoDTO();
+
+			produtoDTO.setIdProduto(produto.getIdProduto());
+			produtoDTO.setDescricao(produto.getDescricao());
+			produtoDTO.setDescricaoConteudo(produto.getDescricaoConteudo());
+			produtoDTO.setCodigoCategoria(produto.getCategoria().getIdCategoria());
+			produtoDTO.setCodigoUnidade(produto.getCodigoUnidade());
+			produtoDTO.setControlaEstoque(produto.getControlaEstoque());
+			produtoDTO.setProdutoOferta(produto.getProdutoOferta());
+			produtoDTO.setProdutoDestaque(produto.getProdutoDestaque());
+			produtoDTO.setPreco(produto.getPreco());
+
+			if (produto.getCategoria() != null) {
+				produtoDTO.setEstruturaMercadologica(estruturaProdutoService.criarEstruturaProdutos(produto.getCategoria()));
+			}
+
+			if (produto.getDataExclusao() != null) {
+				produtoDTO.setDataExclusao(DateUtil.formatString(produto.getDataExclusao(), DateUtil.FORMATO_DD_MM_YYYY));
+			}
+
+			return produtoDTO;
+		});
 	}
 
 	@Override
@@ -237,7 +266,8 @@ public class ProdutosServiceImpl implements ProdutosService {
 				.orElseThrow(() -> new SysDescException("Categoria não encontrada"));
 	}
 
-	private Produto buscarBuscaProduto(Long codigoProduto) {
+	@Override
+	public Produto buscarProduto(Long codigoProduto) {
 
 		return produtoRepository.findById(codigoProduto)
 				.orElseThrow(() -> new SysDescException("Produto não encontrado"));
@@ -246,5 +276,15 @@ public class ProdutosServiceImpl implements ProdutosService {
 	private boolean existeImagemCadastrada(Long codigoProduto) {
 
 		return imagemProdutoRepository.existsByCodigoProduto(codigoProduto);
+	}
+
+	@Override
+	public void alterarPrecoProduto(Long codigoProduto, BigDecimal precoVenda) {
+		Produto produto = buscarProduto(codigoProduto);
+
+		produto.setPreco(precoVenda);
+
+		produtoRepository.save(produto);
+
 	}
 }

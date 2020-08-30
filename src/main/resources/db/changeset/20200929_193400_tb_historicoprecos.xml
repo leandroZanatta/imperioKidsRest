@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd  http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+	<changeSet id="20200929_193400" author="leandro">
+
+		<preConditions onFail="CONTINUE">
+			<not>
+				<tableExists tableName="tb_historicoprecos" />
+			</not>
+		</preConditions>
+
+		<createTable tableName="tb_historicoprecos">
+
+			<column name="id_historicoprecos" type="${numeric.18x0}" remarks="CÓDIGO INDENTIFICADOR">
+				<constraints primaryKey="true" primaryKeyName="historicoprecos_pk" nullable="false" />
+			</column>
+
+			<column name="cd_produto" type="${numeric.18x0}" remarks="CÓDIGO DO PRODUTO">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="dt_cadastro" type="${timestamp}" remarks="DATA DE CADASTRO DO PREÇO">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="vl_preco" type="${numeric.18x2}">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+
+		<createSequence sequenceName="gen_historicoprecos" />
+
+		<addForeignKeyConstraint baseColumnNames="cd_produto" baseTableName="tb_historicoprecos"
+			constraintName="fk_historico_produto" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id_produto" referencedTableName="tb_produto" />
+
+	</changeSet>
+
+</databaseChangeLog>

@@ -1,5 +1,6 @@
 package br.com.sysdesc.imperio.kids.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -8,6 +9,7 @@ import br.com.sysdesc.imperio.kids.dto.CadastroImagemProdutoDTO;
 import br.com.sysdesc.imperio.kids.dto.DetalheProdutoDTO;
 import br.com.sysdesc.imperio.kids.dto.ImagemProdutoDTO;
 import br.com.sysdesc.imperio.kids.dto.ProdutoDTO;
+import br.com.sysdesc.imperio.kids.repository.domain.Produto;
 
 public interface ProdutosService {
 
@@ -28,4 +30,8 @@ public interface ProdutosService {
 	public abstract DetalheProdutoDTO buscarDetalhes(Long codigoProduto);
 
 	public abstract void excluirImagem(Long idImagem);
+
+	public abstract Produto buscarProduto(Long codigoProduto);
+
+	public abstract void alterarPrecoProduto(Long codigoProduto, BigDecimal precoVenda);
 }
