@@ -25,6 +25,7 @@ import br.com.sysdesc.imperio.kids.repository.domain.ImagemProduto;
 import br.com.sysdesc.imperio.kids.repository.domain.Produto;
 import br.com.sysdesc.imperio.kids.service.AmazonService;
 import br.com.sysdesc.imperio.kids.service.EstruturaProdutoService;
+import br.com.sysdesc.imperio.kids.service.PrecoVendaService;
 import br.com.sysdesc.imperio.kids.service.ProdutosService;
 import br.com.sysdesc.imperio.kids.util.DateUtil;
 import br.com.sysdesc.imperio.kids.util.LongUtil;
@@ -33,6 +34,18 @@ import br.com.sysdesc.imperio.kids.util.SysDescException;
 
 @Service
 public class ProdutosServiceImpl implements ProdutosService {
+
+	@Autowired
+	@Lazy
+	private AmazonService amazonService;
+
+	@Autowired
+	@Lazy
+	private PrecoVendaService precoVendaService;
+
+	@Autowired
+	@Lazy
+	private EstruturaProdutoService estruturaProdutoService;
 
 	@Autowired
 	@Lazy
@@ -45,14 +58,6 @@ public class ProdutosServiceImpl implements ProdutosService {
 	@Autowired
 	@Lazy
 	private ImagemProdutoRepository imagemProdutoRepository;
-
-	@Autowired
-	@Lazy
-	private AmazonService amazonService;
-
-	@Autowired
-	@Lazy
-	private EstruturaProdutoService estruturaProdutoService;
 
 	@Override
 	public Page<ProdutoDTO> listar(String valorPesquisa, Long pagina, Long registros) {
@@ -152,7 +157,7 @@ public class ProdutosServiceImpl implements ProdutosService {
 
 			ImagemProdutoDTO imagemProdutoDTO = new ImagemProdutoDTO();
 			imagemProdutoDTO.setIdImagemProduto(imagem.getIdImagemProduto());
-			imagemProdutoDTO.setImagemPrincipal(imagem.getImagemPrincipal());
+			imagemProdutoDTO.setImagemPrincipal(imagem.isImagemPrincipal());
 			imagemProdutoDTO.setLocal(imagem.getCaminho());
 
 			return imagemProdutoDTO;
@@ -177,6 +182,7 @@ public class ProdutosServiceImpl implements ProdutosService {
 		Produto produto = buscarProduto(codigoProduto);
 
 		detalheProdutoDTO.setNome(produto.getDescricao());
+		detalheProdutoDTO.setPrecoBase(precoVendaService.buscarPrecoVenda(codigoProduto));
 		detalheProdutoDTO.setDescricao(produto.getDescricaoConteudo());
 		detalheProdutoDTO.setImagens(buscarImagemProdutos(codigoProduto));
 		detalheProdutoDTO.setEstruturaProduto(estruturaProdutoService.criarEstruturaProdutos(produto.getCategoria()));
@@ -237,7 +243,7 @@ public class ProdutosServiceImpl implements ProdutosService {
 
 		ImagemProduto imagemProduto = buscarImagemProduto(idImagem);
 
-		if (imagemProduto.getImagemPrincipal()) {
+		if (imagemProduto.isImagemPrincipal()) {
 
 			throw new SysDescException("Não é possivel excluir a imagem principal");
 		}

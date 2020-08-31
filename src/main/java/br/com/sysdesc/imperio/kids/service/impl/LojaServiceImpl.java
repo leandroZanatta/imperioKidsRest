@@ -1,6 +1,5 @@
 package br.com.sysdesc.imperio.kids.service.impl;
 
-import java.math.BigDecimal;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +10,8 @@ import org.springframework.stereotype.Service;
 
 import br.com.sysdesc.imperio.kids.dto.ProdutoLojaDTO;
 import br.com.sysdesc.imperio.kids.repository.ProdutoRepository;
-import br.com.sysdesc.imperio.kids.repository.projection.ProdutoLojaProjection;
 import br.com.sysdesc.imperio.kids.service.LojaService;
+import br.com.sysdesc.imperio.kids.service.PrecoVendaService;
 import br.com.sysdesc.imperio.kids.util.LongUtil;
 
 @Service
@@ -20,6 +19,9 @@ public class LojaServiceImpl implements LojaService {
 
 	@Autowired
 	private ProdutoRepository produtoRepository;
+
+	@Autowired
+	private PrecoVendaService precoVendaService;
 
 	@Override
 	public Page<ProdutoLojaDTO> listar(Long totalRegistros, Long pagina, Long limit) {
@@ -35,20 +37,11 @@ public class LojaServiceImpl implements LojaService {
 			produtoLojaDTO.setIdProduto(produto.getIdProduto());
 			produtoLojaDTO.setDescricao(produto.getDescricao());
 			produtoLojaDTO.setProdutoPromocao(Boolean.FALSE);
-			produtoLojaDTO.setPrecoBase(buscarPrecoVenda(produto));
+			produtoLojaDTO.setPrecoBase(precoVendaService.buscarPrecoVenda(produto.getIdProduto()));
 			produtoLojaDTO.setImageUrl(produto.getCaminho());
 
 			return produtoLojaDTO;
 		}).collect(Collectors.toList()), PageRequest.of(pagina.intValue(), limit.intValue()), totalRegistros);
-	}
-
-	private BigDecimal buscarPrecoVenda(ProdutoLojaProjection produto) {
-
-		if (produto.getPrecoTemporario() != null && produto.getPrecoBase().compareTo(BigDecimal.ZERO) > 0) {
-			return produto.getPrecoTemporario();
-		}
-
-		return produto.getPrecoBase();
 	}
 
 }

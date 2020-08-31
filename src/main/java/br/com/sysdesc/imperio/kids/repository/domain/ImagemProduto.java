@@ -37,6 +37,6 @@ public class ImagemProduto implements Serializable {
 	private String caminho;
 
 	@Column(name = "fl_imagemprincipal")
-	private Boolean imagemPrincipal;
+	private boolean imagemPrincipal;
 
 }

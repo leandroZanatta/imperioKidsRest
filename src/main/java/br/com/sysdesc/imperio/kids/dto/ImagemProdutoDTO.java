@@ -9,5 +9,5 @@ public class ImagemProdutoDTO {
 
 	private Long idImagemProduto;
 
-	private Boolean imagemPrincipal;
+	private boolean imagemPrincipal;
 }

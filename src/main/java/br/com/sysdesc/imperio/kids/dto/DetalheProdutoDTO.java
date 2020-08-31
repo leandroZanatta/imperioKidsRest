@@ -1,5 +1,6 @@
 package br.com.sysdesc.imperio.kids.dto;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import lombok.Data;
@@ -10,6 +11,8 @@ public class DetalheProdutoDTO {
 	private String nome;
 
 	private String descricao;
+
+	private BigDecimal precoBase;
 
 	private List<ImagemDetalheProdutoDTO> imagens;
 
