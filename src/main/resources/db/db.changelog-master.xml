@@ -18,6 +18,8 @@
 	<include file="db/changeset/20200828_202600_tb_estruturamercadologica.xml" />
 	<include file="db/changeset/20200929_193400_tb_historicoprecos.xml" />
 	<include file="db/changeset/20200929_194100_tb_precotemporario.xml" />
+	<include file="db/changeset/20200931_213400_tb_carrinhocabecalho.xml" />
+	<include file="db/changeset/20200931_214000_tb_carrinhodetalhe.xml" />
 
 	<include file="db/db.inserts.xml" />
 

@@ -181,6 +181,7 @@ public class ProdutosServiceImpl implements ProdutosService {
 
 		Produto produto = buscarProduto(codigoProduto);
 
+		detalheProdutoDTO.setIdProduto(produto.getIdProduto());
 		detalheProdutoDTO.setNome(produto.getDescricao());
 		detalheProdutoDTO.setPrecoBase(precoVendaService.buscarPrecoVenda(codigoProduto));
 		detalheProdutoDTO.setDescricao(produto.getDescricaoConteudo());

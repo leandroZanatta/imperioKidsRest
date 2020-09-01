@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd  http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+	<changeSet id="20200931_214000" author="leandro">
+
+		<preConditions onFail="CONTINUE">
+			<not>
+				<tableExists tableName="tb_carrinhodetalhe" />
+			</not>
+		</preConditions>
+
+		<createTable tableName="tb_carrinhodetalhe">
+
+			<column name="id_carrinhodetalhe" type="${numeric.18x0}" remarks="CÓDIGO INDENTIFICADOR">
+				<constraints primaryKey="true" primaryKeyName="carrinhodetalhe_pk" nullable="false" />
+			</column>
+
+			<column name="cd_carrinhocabecalho" type="${numeric.18x0}" remarks="CÓDIGO DO CARRINHO CABEÇALHO">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="cd_produto" type="${numeric.18x0}" remarks="CÓDIGO DO PRODUTO">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="nr_quantidade" type="${numeric.18x2}" remarks="QUANTIDADE DO PRODUTO">
+				<constraints nullable="false" />
+			</column>
+
+		</createTable>
+
+		<createSequence sequenceName="gen_carrinhodetalhe" />
+
+		<addForeignKeyConstraint baseColumnNames="cd_carrinhocabecalho" baseTableName="tb_carrinhodetalhe"
+			constraintName="fk_detalhe_carrinhocabecalho" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id_carrinhocabecalho"
+			referencedTableName="tb_carrinhocabecalho" />
+
+		<addForeignKeyConstraint baseColumnNames="cd_produto" baseTableName="tb_carrinhodetalhe"
+			constraintName="fk_detalhe_produto" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id_produto" referencedTableName="tb_produto" />
+
+	</changeSet>
+
+</databaseChangeLog>
